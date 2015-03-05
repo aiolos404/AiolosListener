@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var PastebinAPI = require('pastebin-js');
+var cheerio = require('cheerio');
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -61,22 +63,22 @@ app.use(function(err, req, res, next) {
 
 
 
-var pastebin = new PastebinAPI({
-  'api_dev_key' : config.pastebin.api_dev_key,
-  'api_user_name' : config.pastebin.api_user_name,
-  'api_user_password' : config.pastebin.api_user_password
-});
+// var pastebin = new PastebinAPI({
+//   'api_dev_key' : config.pastebin.api_dev_key,
+//   'api_user_name' : config.pastebin.api_user_name,
+//   'api_user_password' : config.pastebin.api_user_password
+// });
  
-pastebin
-  .getPaste('Rr0ffS8C')
-  .then(function (data) {
-    // data contains the raw paste 
-    console.log(data);
-  })
-  .fail(function (err) {
-    // Something went wrong 
-    console.log(err);
-  })
+// pastebin
+//   .getPaste('Rr0ffS8C')
+//   .then(function (data) {
+//     // data contains the raw paste 
+//     console.log(data);
+//   })
+//   .fail(function (err) {
+//     // Something went wrong 
+//     console.log(err);
+//   })
 
 
 module.exports = app;
