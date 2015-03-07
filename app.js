@@ -32,7 +32,7 @@ request(url, function (error, response, html) {
     var $ = cheerio.load(html);
     $('.i_p0').each(function(i, element){
       var a = $(this).next();
-      var url = a.attr('href').substring(1);
+      var url = a.attr('href').substring(1);//get rid of '/' simbol
 
       console.log(url);
 
