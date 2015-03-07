@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var PastebinAPI = require('pastebin-js');
 var cheerio = require('cheerio');
-
+var request = require('request');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -15,52 +15,56 @@ var config = require('./config/config');
 
 var app = express();
 
+var pastebin = new PastebinAPI({
+  'api_dev_key' : config.pastebin.api_dev_key,
+  'api_user_name' : config.pastebin.api_user_name,
+  'api_user_password' : config.pastebin.api_user_password
+});
+ 
+
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');//will be changed to ejs later
+app.get('/scrape', function(req, res){
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+url = 'http://pastebin.com/archive';
 
-app.use('/', routes);
-app.use('/users', users);
+request(url, function (error, response, html) {
+  if (!error && response.statusCode == 200) {
+    var $ = cheerio.load(html);
+    $('.i_p0').each(function(i, element){
+      var a = $(this).next();
+      var url = a.attr('href').substring(1);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+      console.log(url);
+
+      pastebin
+          .getPaste(url)
+          .then(function (data) {
+            // data contains the raw paste 
+            console.log(data);
+          })
+          .fail(function (err) {
+            // Something went wrong 
+            console.log(err);
+          })
+    });
+  }
 });
 
-// error handlers
+// fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
+//     console.log('File successfully written! - Check your project directory for the output.json file');
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
+// })
 
+
+// Finally, we'll just send out a message to the browser reminding you that this app does not have a UI.
+res.send('Check your console!')}) ;
+
+
+
+app.listen('8081')
+console.log('Magic happens on port 8081');
+exports = module.exports = app;
 
 
 // var pastebin = new PastebinAPI({
@@ -81,4 +85,4 @@ app.use(function(err, req, res, next) {
 //   })
 
 
-module.exports = app;
+// module.exports = app;
