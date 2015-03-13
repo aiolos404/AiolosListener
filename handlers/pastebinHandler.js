@@ -1,7 +1,4 @@
-// var userRepository = require('../repositories/userRepository');
-// var SecurityToken = require('../infrastructure/securityToken');
-// var logger = require('../utils/logger');
-// var winston = require('winston');
+
 var config = require('../config/config');
 var PastebinAPI = require('pastebin-js');
 var request = require('request');
@@ -46,10 +43,7 @@ function handleGetURLsRequest() {
 		        json.title = title;
 		        json.url = url;
 		        // json.content = content;
-		        json.addedDate = addedDate;
-		        
-		        // Asynchronously append data to a file, creating the file if it not yet exists. data can be a string or a buffer.
-		        // fs.appendFile('output.json',JSON.stringify(json, null, 4));
+		        json.addedDate = addedDate;   
 		        
 		        // console.log(url);		        
 		        // setTimeout(5000);//polite time for safety purpose
@@ -76,17 +70,12 @@ function getContentofURL(json) {
             console.log(body);
             json.content = body;
             console.log(json);
+            // Asynchronously append data to a file, creating the file if it not yet exists. data can be a string or a buffer.		        
             fs.appendFile('output.json',JSON.stringify(json, null, 4));
         });
 
-
-    // if (i<=0) {
-    //     res.render('index', {title: test});
-    // };
-
 }
 
-   // handleGetURLsRequest();
 
 
 
