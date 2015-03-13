@@ -12,10 +12,11 @@ var http = require('http');
 
 var pastesModel = require('../models/pastesModel');
 
+
+
 var pastebinHandler = function() {
 	
 	this.getURLsFromPastebin= handleGetURLsRequest;
-	// this.getContentFromPastebin= handleGetContentsRequest;
 
 };
 
@@ -27,76 +28,66 @@ var pastebin = new PastebinAPI({
  
 
 //this is the screen scrapping tool to get urls of the most recent posts in pastebin
-function handleGetURLsRequest(req, res) {
-	var $;
+function handleGetURLsRequest() {
 	request(config.pastebin.url, function (error, response, html) {
   		if (!error && response.statusCode == 200) {
-   			 $ = cheerio.load(html);
-    	}
-	});
+   			 var $ = cheerio.load(html);
+    
 		    $('.i_p0').each(function(i, element){
+
 		    	var title, url, content,addedDate;
+		    	var arr = [];
 		    	var a = $(this).next();//get <a>
 		        title = a.text();
 		        url = a.attr('href').substring(1);//get rid of '/' simbol
-
-		        // content = http.get("http://pastebin.com/raw.php?i="+ url);
-		        request("http://pastebin.com/raw.php?i="+ url).pipe(fs.createWriteStream(url+'.json'));
 		        addedDate = new Date();
-
-		  //   	var paste = new pastesModel({
-				// 	title: title,
-				// 	// user.generateHash(password)
-				// 	url: url,
-				// 	addedDate: addedDate,
-				// });
-		       
-		  //    	paste.save();
 		        var json = { title : "", url : "", content : "", addedDate : ""};
-		        
 
-		        console.log("*******************************");
-		        console.log("a new pastes was downloaded from pastebin");
-		        console.log("paste title: " + title);
-		        console.log("paste url: http://pastebin.com/raw.php?i="+url);
-
-		        // console.log(content);
-		        // console.log(" " + pastebin.getPaste('76b2yNRt'));
-				// console.log( pastebin.getPaste('76b2yNRt'));
-
-		        console.log(addedDate);
 		        json.title = title;
 		        json.url = url;
 		        // json.content = content;
 		        json.addedDate = addedDate;
 		        
 		        // Asynchronously append data to a file, creating the file if it not yet exists. data can be a string or a buffer.
-		        fs.appendFile('output.json',JSON.stringify(json, null, 4));
+		        // fs.appendFile('output.json',JSON.stringify(json, null, 4));
 		        
 		        // console.log(url);		        
 		        // setTimeout(5000);//polite time for safety purpose
-		        sleep.sleep(5)//blocking 5 secs polite time for safety purpose
-	    	});
 
+		        console.log("flag");
+				getContentofURL(json);
+		        // sleep.sleep(5)//blocking 5 secs polite time for safety purpose
+	    	});
+			
+
+	  	};
+
+	});
 	
 	res.send("download urls and contents successfully");
 }
 
-function handleGetContentsRequest(req, res) {
-	pastesModel.find(function(err, pastes){
-		pastes.forEach( function (paste){
-				request("http://pastebin.com/raw.php?i=" + paste.url, function (error, response, paste) {
-				  if (!error && response.statusCode == 200) {
 
-		       
-				    res.send(paste) // Show the HTML for the Google homepage. 
-				  }
-			})
+function getContentofURL(json) {
 
-		});
+        var foo = "http://pastebin.com/raw.php?i="+json.url;
 
-	});
+        request(foo, function(err, resp, body) {
+            console.log(body);
+            json.content = body;
+            console.log(json);
+            fs.appendFile('output.json',JSON.stringify(json, null, 4));
+        });
+
+
+    // if (i<=0) {
+    //     res.render('index', {title: test});
+    // };
+
 }
+
+   // handleGetURLsRequest();
+
 
 
 module.exports = pastebinHandler;
