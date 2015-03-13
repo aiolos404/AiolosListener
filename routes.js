@@ -4,6 +4,8 @@ var pastebinHandler = require('./handlers/pastebinHandler');
 var PastebinAPI = require('pastebin-js');
 var config = require('./config/config');
 var request = require('request');
+var http = require('http'); 
+var fs = require('fs');
 // var splunkHandler = require('./handlers/splunkHandler');
 // var botHandler = require('./handlers/botHandler');
 
@@ -35,12 +37,12 @@ router.get('/pastebin/geturl',handlers.pastebin.getURLsFromPastebin);
 
 router.get('/pastebin/test',function(req,res){
 
-	request("http://pastebin.com/raw.php?i=" + "4uc15RtD", function (error, response, body) {
-	  if (!error && response.statusCode == 200) {
-	    res.send(body) // Show the HTML for the Google homepage. 
-	  }
-})
-
+  // 	request("http://pastebin.com/raw.php?i=" + "4uc15RtD", function (error, response, body) {
+  // 	  if (!error && response.statusCode == 200) {
+  // 	    res.send(body) // Show the HTML for the Google homepage. 
+  // 	  }
+  // })
+console.log(request("http://pastebin.com/raw.php?i="+ "4uc15RtD").pipe(fs.createWriteStream('test.json')));
 	// request.get('http://pastebin.com/raw.php?i=4uc15RtD');
 	
 });

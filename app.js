@@ -9,7 +9,7 @@ var PastebinAPI = require('pastebin-js');
 var cheerio = require('cheerio');
 var request = require('request');
 var fs = require('fs');
-
+var mongoose = require('mongoose');
 
 
 var routes = require('./routes');
@@ -20,9 +20,9 @@ var config = require('./config/config');
 
 app.use('/', routes);
 
+mongoose.connect(config.db.mongodb);
 
-
-app.listen('8081')
-console.log('Magic happens on port 8081');
+app.listen('1024')
+console.log('pastebin downloader listening on port 1024');
 exports = module.exports = app;
 
