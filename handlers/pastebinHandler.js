@@ -36,35 +36,32 @@ var pastebin = new PastebinAPI({
 function handleGetURLsRequest() {
 	request(config.pastebin.url, function (error, response, html) {
   		if (!error && response.statusCode == 200) {
-   			 var $ = cheerio.load(html);
+   			 var $ = cheerio.load(html);//create DOM of the html
     
 		    $('.i_p0').each(function(i, element){
 
-		    	var title, url, content,addedDate;
-		    	var arr = [];
-		    	var a = $(this).next();//get <a>
-		        title = a.text();
-		        url = a.attr('href').substring(1);//get rid of '/' simbol
-		        addedDate = new Date();
+		    	var title, url, content,addedDate;//initial the variable
+
+		    	var a = $(this).next();//get <a> tag
+		        title = a.text();//get the title
+		        url = a.attr('href').substring(1);//get url without '/' simbol
+		        addedDate = new Date();//add creating date
+
 		        var json = { title : "", url : "", content : "", addedDate : ""};
 
 		        json.title = title;
 		        json.url = url;
-		        // json.content = content;
 		        json.addedDate = addedDate;   
-		        
-		        // console.log(url);		        
-		        // setTimeout(5000);//polite time for safety purpose
-
-		        console.log("flag");
+		        console.log("flag");		        
 				getContentofURL(json);
-		        // sleep.sleep(5)//blocking 5 secs polite time for safety purpose
+		        sleep.sleep(5)//blocking 5 secs polite time for safety purpose
 	    	});			
 	  	};
 	});	
 }
 
 
+//get the content of the pastes accoring to the url from the json
 function getContentofURL(json) {
     var foo = "http://pastebin.com/raw.php?i="+json.url;
     request(foo, function(err, resp, body) {

@@ -14,7 +14,7 @@ var mongoose = require('mongoose');
 var pastesSchema = mongoose.Schema({     
 	url: {type: String, required: true, index: {unique: true}},
 	title: {type: String, required: true},
-	content: {type: String},
+	content: {type: String,required: true},
 	addedDate: {type: String, required: true},
 });
 
