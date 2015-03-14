@@ -1,4 +1,12 @@
-
+/*--------------------------------------------------------
+1. Jialiang Chang / Mar 13, 2015:
+2. Version log :1.written by Mar 13,2015
+3. Precise examples / instructions to run this program:
+> node ../bin/www (or supervisor ./bin/www if supervisor is intalled)
+> type localhost:1024/pastebin/getpastes in broswer to test running
+4. Aim: store all the logical functions and functional programs 
+5. Notes:
+----------------------------------------------------------*/
 var config = require('../config/config');
 var PastebinAPI = require('pastebin-js');
 var request = require('request');
@@ -51,32 +59,30 @@ function handleGetURLsRequest() {
 		        console.log("flag");
 				getContentofURL(json);
 		        // sleep.sleep(5)//blocking 5 secs polite time for safety purpose
-	    	});
-			
-
+	    	});			
 	  	};
-
-	});
-	
-	res.send("download urls and contents successfully");
+	});	
 }
 
 
 function getContentofURL(json) {
-
-        var foo = "http://pastebin.com/raw.php?i="+json.url;
-
-        request(foo, function(err, resp, body) {
-            console.log(body);
-            json.content = body;
-            console.log(json);
-            // Asynchronously append data to a file, creating the file if it not yet exists. data can be a string or a buffer.		        
-            fs.appendFile('output.json',JSON.stringify(json, null, 4));
-        });
-
+    var foo = "http://pastebin.com/raw.php?i="+json.url;
+    request(foo, function(err, resp, body) {
+        console.log(body);
+        json.content = body;
+        console.log(json);
+        // Asynchronously append data to a file, creating the file if it not yet exists. data can be a string or a buffer.		        
+        // fs.appendFile('output.json',JSON.stringify(json, null, 4));
+        var paste = new pastesModel({
+			title: json.title,
+			// user.generateHash(password)
+			url: json.url,
+			content: json.content,
+			addedDate: json.addedDate,
+		});
+		paste.save();
+    });
 }
-
-
 
 
 module.exports = pastebinHandler;
